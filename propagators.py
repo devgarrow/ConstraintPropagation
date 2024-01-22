@@ -8,6 +8,7 @@
 # desc:
 #
 
+import itertools
 
 #Look for #IMPLEMENT tags in this file. These tags indicate what has
 #to be implemented to complete problem solution.
@@ -98,7 +99,7 @@ def prop_FC(csp, newVar=None):
         cons = csp.get_cons_with_var(newVar)
         for c in cons:
             if c.check_var_val(newVar, newVar.get_assigned_value()) == False:
-                return False, []
+                return False, prunedVals
             if c.get_n_unasgn() == 1:
                 var = c.get_scope()[0]
                 vals = var.cur_domain()
@@ -106,20 +107,22 @@ def prop_FC(csp, newVar=None):
                 for val in vals:
                     if c.check_var_val(var, val) == False:
                         var.prune_value(val)
-                        varPrunedVals.append(val)
+                        varPrunedVals.append(val)                    
                         
-                # Check if the domain of the constrained node is empty
+                 # Check if the domain of the constrained node is empty
                 # this means that this value causes constraint violation
                 if var.cur_domain_size() == 0:
                     for val in varPrunedVals:
                         var.unprune_value(val)
-                    return False, []
-                else:
-                    for val in varPrunedVals:
-                        var.unprune_value(val)
-                        prunedVals.append((var, val))
+                    return False, prunedVals
+
+                # Variable assignment satisfies constraint, include pruned values
+                for val in varPrunedVals:
+                    prunedVals.append((var, val))
+
                         
     else:
+        print("newVar == None")
         cons = csp.get_all_nary_cons(1)
         for c in cons:
             var = c.get_scope()[0]
@@ -132,16 +135,16 @@ def prop_FC(csp, newVar=None):
                     var.unassign()
                     var.prune_value(val)
                     varPrunedVals.append(val)
-                else:
-                    for pair in forward_prop[1]:
-                        prunedVals.append(pair)
+                    
+                for pair in forward_prop[1]:
+                    prunedVals.append(pair)
             prunedVals.append((var, varPrunedVals))
 
             # Check if none of the values are valid (unary constraint is impossible)
             if var.cur_domain_size() == 0:
                 for val in varPrunedVals:
                     var.unprune_value(val)
-                return False, []
+                return False, prunedVals
     return True, prunedVals
 
 
@@ -150,4 +153,6 @@ def prop_GAC(csp, newVar=None):
        processing all constraints. Otherwise we do GAC enforce with
        constraints containing newVar on GAC Queue'''
     #IMPLEMENT
+    
     pass
+    
