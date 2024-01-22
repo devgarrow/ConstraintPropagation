@@ -97,14 +97,16 @@ def prop_FC(csp, newVar=None):
     if newVar != None:
         cons = csp.get_cons_with_var(newVar)
         for c in cons:
+            if c.check_var_val(newVar, newVar.get_assigned_value()) == False:
+                return False, []
             if c.get_n_unasgn() == 1:
                 var = c.get_scope()[0]
                 vals = var.cur_domain()
                 varPrunedVals = []
                 for val in vals:
-                    if c.check_var_val(var, val) != True:
-                        varPrunedVals.append(val)
+                    if c.check_var_val(var, val) == False:
                         var.prune_value(val)
+                        varPrunedVals.append(val)
                         
                 # Check if the domain of the constrained node is empty
                 # this means that this value causes constraint violation
@@ -112,6 +114,10 @@ def prop_FC(csp, newVar=None):
                     for val in varPrunedVals:
                         var.unprune_value(val)
                     return False, []
+                else:
+                    for val in varPrunedVals:
+                        var.unprune_value(val)
+                        prunedVals.append((var, val))
                         
     else:
         cons = csp.get_all_nary_cons(1)
@@ -136,8 +142,7 @@ def prop_FC(csp, newVar=None):
                 for val in varPrunedVals:
                     var.unprune_value(val)
                 return False, []
-                
-     return True, prunedVals
+    return True, prunedVals
 
 
 def prop_GAC(csp, newVar=None):

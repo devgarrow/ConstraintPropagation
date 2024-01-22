@@ -1239,10 +1239,12 @@ class TestPropFC(unittest.TestCase):
 
         self.assertTrue(passed, message)
         if check_diff(var_array[:b[0]],b) == False:
+            print("failed alldiff")
             message += "\n\nFailed an all-diff check!"
             message += "Failed to solve board!\n%s\n" % str(b)
             passed = False
         if check_cage(csp, b, var_array) == False:
+            print("failed cage check")
             message += "\n\nFailed a cage check!"
             message += "Failed to solve board!\n%s\n" % str(b)
             passed = False
