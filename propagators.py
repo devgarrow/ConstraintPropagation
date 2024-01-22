@@ -109,7 +109,7 @@ def prop_FC(csp, newVar=None):
                         var.prune_value(val)
                         varPrunedVals.append(val)                    
                         
-                 # Check if the domain of the constrained node is empty
+                # Check if the domain of the constrained node is empty
                 # this means that this value causes constraint violation
                 if var.cur_domain_size() == 0:
                     for val in varPrunedVals:
@@ -122,7 +122,6 @@ def prop_FC(csp, newVar=None):
 
                         
     else:
-        print("newVar == None")
         cons = csp.get_all_nary_cons(1)
         for c in cons:
             var = c.get_scope()[0]
@@ -153,6 +152,76 @@ def prop_GAC(csp, newVar=None):
        processing all constraints. Otherwise we do GAC enforce with
        constraints containing newVar on GAC Queue'''
     #IMPLEMENT
-    
-    pass
-    
+    prunedVals = []
+    arcs = []
+
+    # Initialize constraints and check to ensure that new assignment is valid
+    if newVar != None:
+        cons = csp.get_cons_with_var(newVar)
+        for c in cons:
+             if c.check_var_val(newVar, newVar.get_assigned_value()) == False:
+                    return False, prunedVals
+    else:
+        cons = csp.get_all_cons()
+
+    # Initialize all arcs for constraints
+    arcs = []
+    for c in cons:
+        scope = c.get_scope()
+        for var in scope:
+            otherVars = []
+            for v in scope:
+                if v != var:
+                    otherVars.append(v)
+            arcs.append((var,c, otherVars))
+
+    # Check consistency of each arc
+    while len(arcs) > 0:
+        currentArc = arcs[0]
+        arcs.remove(currentArc)
+
+        var = currentArc[0]
+        con = currentArc[1]
+        otherVars = currentArc[2]
+        domainX = []
+        for xi in otherVars:
+            domainX.append(xi.cur_domain())
+            
+        combos = list(itertools.product(*domainX)) # gives all possible combinations of other variable values
+
+        varDomain = var.cur_domain()
+        varPrunedVals = []
+
+        # Checks each value in domain of variable to check if there are possible solutions
+        for val in varDomain:
+            if con.check_var_val(var, val) == False: # There are no current satisfying tuples in this constraint
+                var.prune_value(val)
+                varPrunedVals.append(val)
+
+                # Add constraints that have var in them
+                consWithVar = csp.get_cons_with_var(var)
+                for cWithVar in consWithVar:
+                    scope = cWithVar.get_scope()
+                    for cVar in scope:
+                        otherVars = []
+                        if cVar != var:
+                            for v in scope:
+                                if v != cVar:
+                                    otherVars.append(v)
+                            newArc = (cVar,cWithVar, otherVars)
+                            if newArc not in arcs:
+                                arcs.append(newArc)     
+
+                # Check if the domain of the constrained node is empty
+                # this means that this value causes constraint violation
+                if var.cur_domain_size() == 0:
+                    for val in varPrunedVals:
+                        var.unprune_value(val)
+                    return False, prunedVals
+        
+        # Variable assignment satisfies constraint, include pruned values and update constraints to check
+        for val in varPrunedVals:
+            prunedVals.append((var, val))        
+            
+    return True, prunedVals
+        
