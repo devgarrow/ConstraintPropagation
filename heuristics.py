@@ -1,7 +1,7 @@
 # =============================
-# Student Names:
-# Group ID:
-# Date:
+# Student Names: Devynn Garrow, Jessica Guetre
+# Group ID: 13
+# Date: January 28, 2024
 # =============================
 # CISC 352 - W23
 # heuristics.py
