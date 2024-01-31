@@ -72,7 +72,8 @@ simpleCSP.add_constraint(c1)
 simpleCSP.add_constraint(c2)
 
 btracker = BT(simpleCSP)
-btracker.trace_on()
+# btracker.trace_on()
+btracker.trace_off()
 
 print("Plain Bactracking on simple CSP")
 btracker.bt_search(prop_BT)
@@ -80,8 +81,8 @@ print("=======================================================")
 print("Forward Checking on simple CSP")
 btracker.bt_search(prop_FC)
 print("=======================================================")
-# print("GAC on simple CSP")
-# btracker.bt_search(prop_GAC)
+print("GAC on simple CSP")
+btracker.bt_search(prop_GAC)
 
 
 # ======================
@@ -215,13 +216,17 @@ def solve_graph_color(propType, trace=False):
 # ===============
 # Execution block
 # ===============
-trace = True
+trace = False
 print("Plain Backtracking on Colouring Australia")
 solve_graph_color('BT', trace)
 print("=========================================")
-# trace = False
+trace = False
 print("Forward Checking on Colouring Australia")
 solve_graph_color('FC', trace)
+print("=========================================")
+trace = False
+print("GAC on Colouring Australia")
+solve_graph_color('GAC', trace)
 print("=========================================")
 
 
@@ -281,12 +286,13 @@ def solve_nQueens(n, propType, trace=False):
 
 trace = False
 print("Plain Bactracking on 8-queens")
-solve_nQueens(16, 'BT', trace)
+solve_nQueens(8, 'BT', trace)
 print("=======================================================")
 trace = False
 print("Forward Checking 8-queens")
 solve_nQueens(8, 'FC', trace)
 print("=======================================================")
-#print("GAC 8-queens")
-#solve_nQueens(8, 'GAC', trace)
+trace = False
+print("GAC 8-queens")
+solve_nQueens(8, 'GAC', trace)
 

@@ -5,8 +5,12 @@
 # =============================
 # CISC 352 - W23
 # propagators.py
-# desc:
-#
+# desc: 
+    # Functions to implement forward checking and generalized arc consistency (GAC) propagation for a CSP model.  
+    # Function to perform forward checking propagation works for 1) newly assigned variable V: forward check all constraints with V that have one 
+    # unassigned variable left and 2) no newly assigned variable: look for unary constraints of the csp and forward check these constraints
+    # Function to perform GAC propagation works for 1) newly assigned variable V: perform GA consistency check with all constraints containing V 
+    # and 2) no newly assigned variable: perform GA consistency check with with all constaints of the CSP
 
 import itertools
 

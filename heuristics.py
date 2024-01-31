@@ -6,7 +6,11 @@
 # CISC 352 - W23
 # heuristics.py
 # desc:
-#
+    # Implementation of variable ordering heuristics for use within a CSP propagator
+    # ord_dh orders variables according to the degree heuristic and returns the currently unassigned variable that is involved in the largest number of 
+    # constraints on other unassigned variables
+    # ord_mrv orders variables according to the Minimum Remaining Value heuristic and returns the currently unassigned variable that has the fewest 
+    # possible values remaining in its domain
 
 
 #Look for #IMPLEMENT tags in this file. These tags indicate what has
